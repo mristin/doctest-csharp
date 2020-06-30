@@ -1,0 +1,51 @@
+name: Check
+
+on:
+  push:
+    branches-ignore:
+      - '*/doc/*'
+      - '*/workflow/*'
+
+jobs:
+  Execute:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Check the commit message(s)
+        uses: mristin/opinionated-commit-message@v1.0.7
+
+      - name: Install .NET core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.100'
+
+      - name: Restore dotnet tools
+        working-directory: src
+        run: dotnet tool restore
+
+      - name: Check format
+        working-directory: src
+        run: dotnet format --check
+
+      - name: Check line width
+        working-directory: src
+        run: dotnet bite-sized --inputs '**/*.cs' --excludes '**/obj/**'
+
+      - name: Check dead code
+        working-directory: src
+        run: dotnet dead-csharp --inputs '**/*.cs' --excludes '**/obj/**'
+
+      - name: Test
+        working-directory: src
+        run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+      - name: Send to Coveralls
+        working-directory: src
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+          $BRANCH=${env:GITHUB_REF} -replace 'refs/heads/', ''
+          echo "Branch is: $BRANCH"
+          echo "Commit is: $env:GITHUB_SHA"
+          dotnet tool run csmacnz.Coveralls --opencover -i DoctestCsharp.Test\coverage.opencover.xml --useRelativePaths --repoToken $env:COVERALLS_REPO_TOKEN --commitId $env:GITHUB_SHA --commitBranch $BRANCH
