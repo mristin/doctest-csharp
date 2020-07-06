@@ -26,7 +26,7 @@ Such a tool is an established standard in many programming languages (
 *e.g.*, Python's [doctest](
 https://docs.python.org/3/library/doctest.html
 )), but somewhat surprisingly as of this writing in July 2020, C# lacks it.
-Therefore we decided to roll out dead-csharp.
+Therefore we decided to roll out doctest-csharp.
 
 ## Installation
 
