@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-format": {
+      "version": "4.1.131201",
+      "commands": [
+        "dotnet-format"
+      ]
+    },
+    "coveralls.net": {
+      "version": "1.0.0",
+      "commands": [
+        "csmacnz.Coveralls"
+      ]
+    },
+    "bitesized": {
+      "version": "1.0.0-beta1",
+      "commands": [
+        "bite-sized"
+      ]
+    },
+    "deadcsharp": {
+      "version": "1.0.0-beta4",
+      "commands": [
+        "dead-csharp"
+      ]
+    }
+  }
+}

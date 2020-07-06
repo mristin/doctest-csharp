@@ -1,0 +1,16 @@
+name: Reduced-Check
+
+on:
+  push:
+    branches:
+      - '*/doc/*'
+      - '*/workflow/*'
+
+jobs:
+  Execute:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Check the commit message(s)
+        uses: mristin/opinionated-commit-message@v1.0.7

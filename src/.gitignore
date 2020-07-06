@@ -1,0 +1,5 @@
+doctest-csharp.sln.DotSettings.user
+obj/
+bin/
+out/
+coverage.opencover.xml
