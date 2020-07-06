@@ -152,7 +152,7 @@ using Another = AnotherNamespace;
 
 using NUnit.Framework;
 
-namespace Some.Namespace.Test
+namespace Some.Namespace.Tests
 {
     // ...
 
