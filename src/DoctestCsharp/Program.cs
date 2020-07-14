@@ -59,7 +59,7 @@ namespace DoctestCsharp
                     Console.WriteLine(
                         generated
                         ? $"Generated doctest(s) for: {inputPath} -> {outputPath}"
-                        : $"No doctests found in: {inputPath}; not generating {outputPath}");
+                        : $"No doctests found in: {inputPath}");
                 }
                 else
                 {
@@ -67,7 +67,10 @@ namespace DoctestCsharp
                     switch (report)
                     {
                         case Process.Report.Ok:
-                            Console.WriteLine($"OK: {inputPath} -> {outputPath}");
+                            Console.WriteLine(
+                                (doctests.Count > 0)
+                                    ? $"OK: {inputPath} -> {outputPath}"
+                                    : $"OK, no doctests: {inputPath}");
                             break;
                         case Process.Report.Different:
                             Console.WriteLine($"Expected different content: {inputPath} -> {outputPath}");
@@ -114,7 +117,7 @@ namespace DoctestCsharp
                     "Output directory where the test source code will be generated.")
                 {
                     Required = true,
-                    Argument = new Argument<DirectoryInfo>().ExistingOnly()
+                    Argument = new Argument<DirectoryInfo>()
                 },
 
                 new Option<string[]>(
