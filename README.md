@@ -64,8 +64,8 @@ For example:
 a project folder ("input") and a test folder ("output"). The pair is given 
 as a concatenation `{input}{PATH separator}{output}`. For example, on a Linux 
 system the input-output pair might be something like: 
-`SomeProject:SomeProject.Doctests`. The same input-output pair in Windows is:
-`SomeProject;SomeProject.Doctests`.
+`SomeProject:SomeProject.Tests`. The same input-output pair in Windows is:
+`SomeProject;SomeProject.Tests`.
 
 If you omit the output (*e.g.*, `SomeProject:` on Linux), the output is 
 automatically inferred by appending the `--suffix` command-line argument.
@@ -109,7 +109,7 @@ For example:
 
 ```bash
 dotnet doctest-csharp \
-    --input-output SomeProject:SomeProject.Test/doctests
+    --input-output SomeProject:
     --exclude '**/obj/**'
 ```
 
@@ -203,7 +203,7 @@ For example:
 
 ```bash
 dotnet doctest-csharp \
-    --input-output SomeProject:SomeProject.Test/doctests \
+    --input-output SomeProject:
     --check
 ```
 
