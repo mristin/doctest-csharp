@@ -60,10 +60,19 @@ For example:
 /// </code>
 ``` 
 
-**Input and output**. You need to specify the project folder (`--input`) and 
-the folder containing the generated doctests (`--output`). Doctest-csharp will 
-scan all the `**/*.cs` files in the input and generate the unit tests in 
-the output.
+**Input and output**. You need to specify one or more pairs consisting of 
+a project folder ("input") and a test folder ("output"). The pair is given 
+as a concatenation `{input}{PATH separator}{output}`. For example, on a Linux 
+system the input-output pair might be something like: 
+`SomeProject:SomeProject.Doctests`. The same input-output pair in Windows is:
+`SomeProject;SomeProject.Doctests`.
+
+If you omit the output (*e.g.*, `SomeProject:` on Linux), the output is 
+automatically inferred by appending the `--suffix` command-line argument.
+The default `--suffix` is `.Tests`.
+
+Doctest-csharp will scan all the `**/*.cs` files in the input folder and 
+generate the unit tests in the output folder.
 
 The relative paths will be preserved. The resulting doctest files will be 
 prefixed with `DocTest`.
@@ -72,13 +81,26 @@ For example:
 
 ```bash
 dotnet doctest-csharp \
-    --input SomeProject
-    --output SomeProject.Test/doctests
+    --input-output SomeProject:SomeProject.Tests/doctests
 ```
 
 Assume there exists `SomeProject/SomeFile.cs`. Doctest-csharp will scan it
 and generate the corresponding doctests to 
-`SomeProject.Test/doctests/DocTestSomeFile.cs`. 
+`SomeProject.Tests/doctests/DocTestSomeFile.cs`. 
+
+In case you have multiple projects all following the same naming convention,
+you can specify `--suffix` and pass in multiple input-only pairs. For example:
+
+```bash
+dotnet doctest-csharp \
+    --input-output \
+        SomeProject: \
+        AnotherProject: \
+    --suffix ".Tests/doctests"
+```
+
+The corresponding inferred outputs will be `SomeProject.Tests/doctests` and
+`AnotherProject.Tests/doctests`, respectively.
 
 **Exclude**. If you want to exclude certain files from the scan, use `--exclude`
 with a Glob pattern.
@@ -87,8 +109,7 @@ For example:
 
 ```bash
 dotnet doctest-csharp \
-    --input SomeProject
-    --output SomeProject.Test/doctests
+    --input-output SomeProject:SomeProject.Test/doctests
     --exclude '**/obj/**'
 ```
 
@@ -182,9 +203,8 @@ For example:
 
 ```bash
 dotnet doctest-csharp \
-    --input SomeProject
-    --output SomeProject.Test/doctests \
-    -- check
+    --input-output SomeProject:SomeProject.Test/doctests \
+    --check
 ```
 
 ## Contributing

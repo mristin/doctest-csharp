@@ -1,5 +1,4 @@
 using Path = System.IO.Path;
-using DirectoryInfo = System.IO.DirectoryInfo;
 using File = System.IO.File;
 
 using CSharpSyntaxTree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree;
@@ -17,7 +16,7 @@ namespace DoctestCsharp.Test
         {
             using var tmpdir = new TemporaryDirectory();
 
-            string got = Process.InputPath("SomeProgram.cs", new DirectoryInfo(tmpdir.Path));
+            string got = Process.InputPath("SomeProgram.cs", tmpdir.Path);
 
             Assert.AreEqual(Path.Join(tmpdir.Path, "SomeProgram.cs"), got);
         }
@@ -39,7 +38,7 @@ namespace DoctestCsharp.Test
                 using var tmpdir = new TemporaryDirectory();
 
                 string absoluteOutputPath = Process.OutputPath(
-                    relativePath, new DirectoryInfo(tmpdir.Path));
+                    relativePath, tmpdir.Path);
 
                 string relativeOutputPath = Path.GetRelativePath(tmpdir.Path, absoluteOutputPath);
 
