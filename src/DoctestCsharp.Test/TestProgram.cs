@@ -22,8 +22,7 @@ namespace DoctestCsharp.Test
 
             Assert.AreEqual(1, exitCode);
             Assert.AreEqual(
-                $"Option '--input' is required.{nl}" +
-                $"Option '--output' is required.{nl}{nl}",
+                $"Option '--input-output' is required.{nl}{nl}",
                 consoleCapture.Error());
         }
 
@@ -38,8 +37,7 @@ namespace DoctestCsharp.Test
 
             Assert.AreEqual(1, exitCode);
             Assert.AreEqual(
-                $"Option '--input' is required.{nl}" +
-                $"Option '--output' is required.{nl}" +
+                $"Option '--input-output' is required.{nl}" +
                 $"Unrecognized command or argument '--invalid-arg'{nl}{nl}",
                 consoleCapture.Error());
         }
@@ -61,7 +59,8 @@ namespace DoctestCsharp.Test
 
             using var consoleCapture = new ConsoleCapture();
 
-            int exitCode = Program.MainWithCode(new[] { "--input", input.FullName, "--output", output.FullName });
+            int exitCode = Program.MainWithCode(
+                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}" });
 
             string nl = Environment.NewLine;
 
@@ -69,6 +68,8 @@ namespace DoctestCsharp.Test
             Assert.AreEqual(
                 $"No doctests found in: {inputPath}{nl}",
                 consoleCapture.Output());
+
+            Assert.IsFalse(File.Exists(outputPath));
         }
 
         [Test]
@@ -90,7 +91,8 @@ namespace DoctestCsharp.Test
 
             using var consoleCapture = new ConsoleCapture();
 
-            int exitCode = Program.MainWithCode(new[] { "--input", input.FullName, "--output", output.FullName });
+            int exitCode = Program.MainWithCode(
+                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}" });
 
             string nl = Environment.NewLine;
 
@@ -120,7 +122,8 @@ namespace DoctestCsharp.Test
 
             using var consoleCapture = new ConsoleCapture();
 
-            int exitCode = Program.MainWithCode(new[] { "--input", input.FullName, "--output", output.FullName });
+            int exitCode = Program.MainWithCode(
+                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}" });
 
             string nl = Environment.NewLine;
 
@@ -174,7 +177,7 @@ namespace Tests
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input", input.FullName, "--output", output.FullName, "--check" });
+                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}", "--check" });
 
             string nl = Environment.NewLine;
 
@@ -205,12 +208,14 @@ namespace Tests
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input", input.FullName, "--output", output.FullName, "--check" });
+                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}", "--check" });
 
             string nl = Environment.NewLine;
 
             Assert.AreEqual(1, exitCode);
-            Assert.AreEqual($"Output file does not exist: {inputPath} -> {outputPath}{nl}", consoleCapture.Output());
+            Assert.AreEqual(
+                $"Output file does not exist: {inputPath} -> {outputPath}{nl}",
+                consoleCapture.Output());
         }
 
         [Test]
@@ -235,7 +240,7 @@ namespace Tests
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input", input.FullName, "--output", output.FullName, "--check" });
+                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}", "--check" });
 
             string nl = Environment.NewLine;
 
@@ -262,7 +267,7 @@ namespace Tests
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input", input.FullName, "--output", output.FullName, "--check" });
+                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}", "--check" });
 
             string nl = Environment.NewLine;
 
@@ -285,7 +290,8 @@ namespace Tests
 
             using var consoleCapture = new ConsoleCapture();
 
-            int exitCode = Program.MainWithCode(new[] { "--input", input.FullName, "--output", output, "--check" });
+            int exitCode = Program.MainWithCode(
+                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output}", "--check" });
 
             string nl = Environment.NewLine;
 

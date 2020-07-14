@@ -2,94 +2,121 @@
 using InvalidOperationException = System.InvalidOperationException;
 using Console = System.Console;
 using Environment = System.Environment;
-
+using Path = System.IO.Path;
+using File = System.IO.File;
+using Directory = System.IO.Directory;
 using CSharpSyntaxTree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree;
-
 using System.Collections.Generic;
 using System.CommandLine;
-using System.IO;
-
 
 namespace DoctestCsharp
 {
     public class Program
     {
-        private static int Handle(DirectoryInfo input, DirectoryInfo output, string[]? excludes, bool check)
+        private static int Handle(string[] inputOutput, string suffix, string[]? excludes, bool check)
         {
             int exitCode = 0;
 
-            IEnumerable<string> relativePaths = Input.MatchFiles(
-                input.FullName,
-                new List<string> { "**/*.cs" },
-                new List<string>(excludes ?? new string[0]));
-
-            foreach (string relativePath in relativePaths)
+            var inputOutputOrError = Input.ParseInputOutput(inputOutput, suffix);
+            if (inputOutputOrError.Error != null)
             {
-                if (Path.IsPathRooted(relativePath))
+                Console.Error.WriteLine($"Failed to parse --input-output: {inputOutputOrError.Error}");
+                return 1;
+            }
+
+            if (inputOutputOrError.InputOutput == null)
+            {
+                throw new InvalidOperationException(
+                    "Invalid inputOutputOrError: both InputOutput and Error are null.");
+            }
+
+            string cwd = Directory.GetCurrentDirectory();
+
+            foreach (var (input, output) in inputOutputOrError.InputOutput)
+            {
+                string rootedInput =
+                    Path.IsPathRooted(input)
+                        ? input
+                        : Path.Join(cwd, input);
+
+                string rootedOutput =
+                    Path.IsPathRooted(output)
+                        ? output
+                        : Path.Join(cwd, output);
+
+                IEnumerable<string> relativePaths = Input.MatchFiles(
+                    rootedInput,
+                    new List<string> { "**/*.cs" },
+                    new List<string>(excludes ?? new string[0]));
+
+                foreach (string relativePath in relativePaths)
                 {
-                    throw new InvalidOperationException(
-                        $"Expected path to be relative, but got rooted path: {relativePath}");
-                }
-
-                string inputPath = Process.InputPath(relativePath, input);
-                string outputPath = Process.OutputPath(relativePath, output);
-
-                var doctestsAndErrors = Extraction.Extract(
-                    CSharpSyntaxTree.ParseText(
-                        File.ReadAllText(inputPath)));
-
-                if (doctestsAndErrors.Errors.Count > 0)
-                {
-                    Console.WriteLine($"Failed to extract doctest(s) from: {inputPath}");
-                    foreach (var error in doctestsAndErrors.Errors)
+                    if (Path.IsPathRooted(relativePath))
                     {
-                        Console.WriteLine($"* Line {error.Line + 1}, column {error.Column + 1}: {error.Message}");
+                        throw new InvalidOperationException(
+                            $"Expected path to be relative, but got rooted path: {relativePath}");
                     }
 
-                    exitCode = 1;
+                    string inputPath = Process.InputPath(relativePath, rootedInput);
+                    string outputPath = Process.OutputPath(relativePath, rootedOutput);
 
-                    continue;
-                }
+                    var doctestsAndErrors = Extraction.Extract(
+                        CSharpSyntaxTree.ParseText(
+                            File.ReadAllText(inputPath)));
 
-                var doctests = doctestsAndErrors.Doctests;
-
-                if (!check)
-                {
-                    bool generated = Process.Generate(doctests, outputPath);
-                    Console.WriteLine(
-                        generated
-                        ? $"Generated doctest(s) for: {inputPath} -> {outputPath}"
-                        : $"No doctests found in: {inputPath}");
-                }
-                else
-                {
-                    var report = Process.Check(doctests, outputPath);
-                    switch (report)
+                    if (doctestsAndErrors.Errors.Count > 0)
                     {
-                        case Process.Report.Ok:
-                            Console.WriteLine(
-                                (doctests.Count > 0)
-                                    ? $"OK: {inputPath} -> {outputPath}"
-                                    : $"OK, no doctests: {inputPath}");
-                            break;
-                        case Process.Report.Different:
-                            Console.WriteLine($"Expected different content: {inputPath} -> {outputPath}");
-                            exitCode = 1;
-                            break;
+                        Console.WriteLine($"Failed to extract doctest(s) from: {inputPath}");
+                        foreach (var error in doctestsAndErrors.Errors)
+                        {
+                            Console.WriteLine($"* Line {error.Line + 1}, column {error.Column + 1}: {error.Message}");
+                        }
 
-                        case Process.Report.DoesntExist:
-                            Console.WriteLine($"Output file does not exist: {inputPath} -> {outputPath}");
-                            exitCode = 1;
-                            break;
+                        exitCode = 1;
 
-                        case Process.Report.ShouldNotExist:
-                            Console.WriteLine(
-                                $"No doctests found in: {inputPath}; the output should not exist: {outputPath}");
-                            exitCode = 1;
-                            break;
+                        continue;
+                    }
 
-                        default:
-                            throw new NotImplementedException($"Uncovered report: {report}");
+                    var doctests = doctestsAndErrors.Doctests;
+
+                    if (!check)
+                    {
+                        bool generated = Process.Generate(doctests, outputPath);
+                        Console.WriteLine(
+                            generated
+                                ? $"Generated doctest(s) for: {inputPath} -> {outputPath}"
+                                : $"No doctests found in: {inputPath}");
+                    }
+                    else
+                    {
+                        var report = Process.Check(doctests, outputPath);
+                        switch (report)
+                        {
+                            case Process.Report.Ok:
+                                Console.WriteLine(
+                                    (doctests.Count > 0)
+                                        ? $"OK: {inputPath} -> {outputPath}"
+                                        : $"OK, no doctests: {inputPath}");
+                                break;
+                            case Process.Report.Different:
+                                Console.WriteLine($"Expected different content: {inputPath} -> {outputPath}");
+                                exitCode = 1;
+                                break;
+
+                            case Process.Report.DoesntExist:
+                                Console.WriteLine($"Output file does not exist: {inputPath} -> {outputPath}");
+                                exitCode = 1;
+                                break;
+
+                            case Process.Report.ShouldNotExist:
+                                Console.WriteLine(
+                                    $"No doctests found in: {inputPath}; the output should not exist: {outputPath}");
+                                exitCode = 1;
+                                break;
+
+                            default:
+                                throw new NotImplementedException($"Uncovered report: {report}");
+                        }
                     }
                 }
             }
@@ -104,21 +131,23 @@ namespace DoctestCsharp
             var rootCommand = new RootCommand(
                 "Generates tests from the embedded code snippets in the code documentation.")
             {
-                new Option<DirectoryInfo>(
-                    new[] {"--input", "-i"},
-                    "Input directory containing the *.cs files")
+                new Option<string[]>(
+                    new[] {"--input-output"},
+                    $"Input and output directory pairs containing the *.cs files{nl}{nl}" +
+                    "The input is separated from the output by the PATH separator " +
+                    "(e.g., ';' on Windows, ':' on POSIX)." +
+                    "If no output is specified, the --suffix is appended to the input to automatically obtain " +
+                    "the output.")
                 {
-                    Required = true,
-                    Argument = new Argument<DirectoryInfo>().ExistingOnly()
+                    Required = true
                 },
 
-                new Option<DirectoryInfo>(
-                    new[] {"--output", "-o"},
-                    "Output directory where the test source code will be generated.")
-                {
-                    Required = true,
-                    Argument = new Argument<DirectoryInfo>()
-                },
+                new Option<string>(
+                    new[] {"--suffix", "-s"},
+                    () => ".Tests",
+                    "Suffix to be automatically appended to the input to obtain the output directory " +
+                    "in cases where no explicit output directory was given"
+                ),
 
                 new Option<string[]>(
                     new[] {"--excludes", "-e"},
@@ -138,8 +167,8 @@ namespace DoctestCsharp
             };
 
             rootCommand.Handler = System.CommandLine.Invocation.CommandHandler.Create(
-                (DirectoryInfo input, DirectoryInfo output, string[]? excludes, bool check) =>
-                    Handle(input, output, excludes, check));
+                (string[] inputOutput, string suffix, string[]? excludes, bool check) =>
+                    Handle(inputOutput, suffix, excludes, check));
 
             int exitCode = rootCommand.InvokeAsync(args).Result;
             return exitCode;

@@ -9,17 +9,17 @@ namespace DoctestCsharp
 {
     public static class Process
     {
-        public static string InputPath(string relativePath, DirectoryInfo input)
+        public static string InputPath(string relativePath, string input)
         {
             if (Path.IsPathRooted(relativePath))
             {
                 throw new ArgumentException($"Expected a relative path, but got a rooted one: {relativePath}");
             }
 
-            return Path.Join(input.FullName, relativePath);
+            return Path.Join(input, relativePath);
         }
 
-        public static string OutputPath(string relativePath, DirectoryInfo output)
+        public static string OutputPath(string relativePath, string output)
         {
             if (Path.IsPathRooted(relativePath))
             {
@@ -30,7 +30,7 @@ namespace DoctestCsharp
                 Path.GetDirectoryName(relativePath),
                 "DocTest" + Path.GetFileName(relativePath));
 
-            return Path.Join(output.FullName, doctestRelativePath);
+            return Path.Join(output, doctestRelativePath);
         }
 
         /// <summary>

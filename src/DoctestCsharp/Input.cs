@@ -1,14 +1,93 @@
+using System;
 using ArgumentException = System.ArgumentException;
 using StringComparer = System.StringComparer;
 using Path = System.IO.Path;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace DoctestCsharp
 {
     public static class Input
     {
+        public class InputOutputOrError
+        {
+            public readonly List<(string, string)>? InputOutput;
+            public readonly string? Error;
+
+            public InputOutputOrError(List<(string, string)>? inputOutput, string? error)
+            {
+                if (inputOutput == null && error == null)
+                {
+                    throw new ArgumentException("Both inputOutput and error null");
+                }
+
+                if (inputOutput != null && error != null)
+                {
+                    throw new ArgumentException("Both inputOutput and error given");
+                }
+
+                InputOutput = inputOutput;
+                Error = error;
+            }
+        }
+        // TODO: document this behavior in the readme
+
+        /// <summary>
+        /// Parses the command-line arguments given as --input-output. 
+        /// </summary>
+        /// <param name="inputOutput">command-line arguments for --input-output</param>
+        /// <param name="suffix">command-line argument --suffix to be appended if no output given</param>
+        /// <returns>List of pairs (input, output)</returns>
+        public static InputOutputOrError ParseInputOutput(string[] inputOutput, string suffix)
+        {
+            if (inputOutput.Length == 0)
+            {
+                return new InputOutputOrError(new List<(string, string)>(), null);
+            }
+
+            var result = new List<(string, string)>(inputOutput.Length);
+
+            foreach (string pairStr in inputOutput)
+            {
+                string[] parts = pairStr.Split(Path.PathSeparator);
+
+                switch (parts.Length)
+                {
+                    case 0:
+                        return new InputOutputOrError(
+                            null, "Expected at least an input, but got an empty string");
+                    case 1:
+                        result.Add((parts[0], parts[0] + suffix));
+                        break;
+                    case 2:
+
+                        result.Add(
+                            (
+                                parts[0],
+                                // Empty output implies automatic output.
+                                (parts[1].Length == 0) ? parts[0] + suffix : parts[1]));
+                        break;
+                    default:
+                        return new InputOutputOrError(
+                            null,
+                            $"Expected at most a pair, but got {parts.Length} parts " +
+                            $"separated by {Path.PathSeparator} from the input-output: {pairStr}");
+                }
+            }
+
+            // Post-condition
+            if (result.Count != inputOutput.Length)
+            {
+                throw new InvalidOperationException(
+                    $"Unexpected result.Count (== {result.Count}) != " +
+                    $"inputOutput.Length (== {inputOutput.Length})");
+            }
+
+            return new InputOutputOrError(result, null);
+        }
+
         /// <summary>
         /// Matches all the files defined by the patterns, includes and excludes.
         /// If any of the patterns is given as a relative directory,

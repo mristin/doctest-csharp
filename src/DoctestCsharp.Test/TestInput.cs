@@ -1,13 +1,117 @@
 using Path = System.IO.Path;
-
 using System.Collections.Generic;
 using System.Linq;
-
 using NUnit.Framework;
 
 namespace DoctestCsharp.Test
 {
-    public class InputTests
+    public class InputOutputParseTests
+    {
+        [Test]
+        public void TestNoInputOutput()
+        {
+            var inputOutputOrError = Input.ParseInputOutput(new string[] { }, ".Tests");
+            Assert.AreEqual(null, inputOutputOrError.Error);
+            Assert.That(
+                inputOutputOrError.InputOutput,
+                Is.EquivalentTo(new List<(string, string)>()));
+        }
+
+        [Test]
+        public void TestSingleInputOutput()
+        {
+            var inputOutputOrError = Input.ParseInputOutput(
+                new[]
+                {
+                    $"someInput{Path.PathSeparator}someOutput"
+                },
+                ".Tests");
+
+            Assert.AreEqual(null, inputOutputOrError.Error);
+            Assert.That(
+                inputOutputOrError.InputOutput,
+                Is.EquivalentTo(
+                    new List<(string, string)>
+                    {
+                        ("someInput", "someOutput")
+                    }));
+        }
+
+        public void TestMultipleInputOutput()
+        {
+            var inputOutputOrError = Input.ParseInputOutput(
+                new[]
+                {
+                    $"someInput{Path.PathSeparator}someOutput",
+                    $"anotherInput{Path.PathSeparator}anotherOutput"
+                },
+                ".Tests");
+
+            Assert.AreEqual(null, inputOutputOrError.Error);
+            Assert.That(
+                inputOutputOrError.InputOutput,
+                Is.EquivalentTo(
+                    new List<(string, string)>
+                    {
+                        ("someInput", "someOutput"),
+                        ("anotherInput", "anotherOutput")
+                    }));
+        }
+
+        [Test]
+        public void TestAutomaticOutputOnEmptyOutput()
+        {
+            var inputOutputOrError = Input.ParseInputOutput(
+                new[]
+                {
+                    $"someInput{Path.PathSeparator}"
+                },
+                ".Tests");
+
+            Assert.AreEqual(null, inputOutputOrError.Error);
+            Assert.That(
+                inputOutputOrError.InputOutput,
+                Is.EquivalentTo(
+                    new List<(string, string)>
+                    {
+                        ("someInput", "someInput.Tests")
+                    }));
+        }
+
+        [Test]
+        public void TestAutomaticOutputOnNoOutput()
+        {
+            var inputOutputOrError = Input.ParseInputOutput(
+                new[]
+                {
+                    "someInput"
+                },
+                ".Tests");
+
+            Assert.AreEqual(null, inputOutputOrError.Error);
+            Assert.That(
+                inputOutputOrError.InputOutput,
+                Is.EquivalentTo(
+                    new List<(string, string)>
+                    {
+                        ("someInput", "someInput.Tests")
+                    }));
+        }
+
+        [Test]
+        public void TestError()
+        {
+            string inputOutputRaw = $"someInput{Path.PathSeparator}someOutput{Path.PathSeparator}something wrong";
+            var inputOutputOrError = Input.ParseInputOutput(new[] { inputOutputRaw }, ".Tests");
+
+            Assert.AreEqual(
+                $"Expected at most a pair, but got 3 parts " +
+                $"separated by {Path.PathSeparator} from the input-output: {inputOutputRaw}",
+                inputOutputOrError.Error);
+        }
+    }
+
+    public class MatchFilesTests
     {
         private static void WriteDummyFile(string prefix, string dirName, string subdirName, string name)
         {
