@@ -160,7 +160,7 @@ namespace Tests
     public class DocTests
     {
         [Test]
-        public void AtLine0AndColumn4
+        public void AtLine0AndColumn4()
         {
             var x = 1;
         }

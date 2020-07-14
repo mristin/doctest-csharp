@@ -110,13 +110,13 @@ namespace SomeNamespace.Tests
     public class DocTests
     {
         [Test]
-        public void AtLine10AndColumn11
+        public void AtLine10AndColumn11()
         {
             var a = 1;
         }
 
         [Test]
-        public void AtLine20AndColumn21
+        public void AtLine20AndColumn21()
         {
             var b = 2;
         }
@@ -128,13 +128,13 @@ namespace AnotherNamespace.Tests
     public class DocTests
     {
         [Test]
-        public void AtLine30AndColumn31
+        public void AtLine30AndColumn31()
         {
             var c = 3;
         }
 
         [Test]
-        public void AtLine40AndColumn41
+        public void AtLine40AndColumn41()
         {
             var d = 4;
         }
@@ -146,13 +146,13 @@ namespace SomeNamespace.Tests
     public class DocTests2
     {
         [Test]
-        public void AtLine50AndColumn51
+        public void AtLine50AndColumn51()
         {
             var e = 5;
         }
 
         [Test]
-        public void AtLine60AndColumn61
+        public void AtLine60AndColumn61()
         {
             var f = 6;
         }

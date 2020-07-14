@@ -192,7 +192,7 @@ namespace DoctestCsharp
 
                     var doctest = namespacedDoctests.Doctests[i];
                     block.WriteLine("        [Test]");
-                    block.WriteLine($"        public void AtLine{doctest.Line}AndColumn{doctest.Column}");
+                    block.WriteLine($"        public void AtLine{doctest.Line}AndColumn{doctest.Column}()");
                     block.WriteLine("        {"); // method opening
 
                     block.WriteLine(
