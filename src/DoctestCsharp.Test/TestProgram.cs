@@ -160,7 +160,7 @@ using NUnit.Framework;
 
 namespace Tests
 {
-    public class DocTests
+    public class DocTest_SomeProgram_cs
     {
         [Test]
         public void AtLine0AndColumn4()

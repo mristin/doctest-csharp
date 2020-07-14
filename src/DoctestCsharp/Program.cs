@@ -81,7 +81,7 @@ namespace DoctestCsharp
 
                     if (!check)
                     {
-                        bool generated = Process.Generate(doctests, outputPath);
+                        bool generated = Process.Generate(doctests, relativePath, outputPath);
                         Console.WriteLine(
                             generated
                                 ? $"Generated doctest(s) for: {inputPath} -> {outputPath}"
@@ -89,7 +89,7 @@ namespace DoctestCsharp
                     }
                     else
                     {
-                        var report = Process.Check(doctests, outputPath);
+                        var report = Process.Check(doctests, relativePath, outputPath);
                         switch (report)
                         {
                             case Process.Report.Ok:
