@@ -5,6 +5,7 @@ using DirectoryInfo = System.IO.DirectoryInfo;
 using Environment = System.Environment;
 
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 
 namespace DoctestCsharp.Test
 {
@@ -66,7 +67,7 @@ namespace DoctestCsharp.Test
 
             Assert.AreEqual(0, exitCode);
             Assert.AreEqual(
-                $"No doctests found in: {inputPath}; not generating {outputPath}{nl}",
+                $"No doctests found in: {inputPath}{nl}",
                 consoleCapture.Output());
         }
 
@@ -268,6 +269,29 @@ namespace Tests
             Assert.AreEqual(1, exitCode);
             Assert.AreEqual(
                 $"No doctests found in: {inputPath}; the output should not exist: {outputPath}{nl}",
+                consoleCapture.Output());
+        }
+
+        [Test]
+        public void TestOutputMayNotExistIfNoDoctests()
+        {
+            using var tmpdir = new TemporaryDirectory();
+            DirectoryInfo input = Directory.CreateDirectory(Path.Join(tmpdir.Path, "SomeProject"));
+            string output = Path.Join(tmpdir.Path, "SomeProject.Test/doctests");
+            Assert.IsFalse(File.Exists(output));
+
+            string inputPath = Path.Join(input.FullName, "SomeProgram.cs");
+            File.WriteAllText(inputPath, "no doctests");
+
+            using var consoleCapture = new ConsoleCapture();
+
+            int exitCode = Program.MainWithCode(new[] { "--input", input.FullName, "--output", output, "--check" });
+
+            string nl = Environment.NewLine;
+
+            Assert.AreEqual(0, exitCode);
+            Assert.AreEqual(
+                $"OK, no doctests: {inputPath}{nl}",
                 consoleCapture.Output());
         }
     }

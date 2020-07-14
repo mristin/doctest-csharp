@@ -2,4 +2,5 @@ doctest-csharp.sln.DotSettings.user
 obj/
 bin/
 out/
+coverage.json
 coverage.opencover.xml
