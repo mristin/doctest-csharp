@@ -132,7 +132,10 @@ namespace DoctestCsharp
             }
         }
 
-        public static void Generate(List<Extraction.Doctest> doctests, System.IO.TextWriter writer)
+        public static void Generate(
+            List<Extraction.Doctest> doctests,
+            string suiteIdentifier,
+            System.IO.TextWriter writer)
         {
             var blocks = new List<string>();
 
@@ -178,8 +181,8 @@ namespace DoctestCsharp
 
                 block.WriteLine(
                     namespaceCount[namespacedDoctests.Namespace] > 1
-                        ? $"    public class DocTests{namespaceCount[namespacedDoctests.Namespace]}"
-                        : "    public class DocTests");
+                        ? $"    public class {suiteIdentifier}{namespaceCount[namespacedDoctests.Namespace]}"
+                        : $"    public class {suiteIdentifier}");
 
                 block.WriteLine("    {"); // class opening
 

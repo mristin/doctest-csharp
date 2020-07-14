@@ -146,7 +146,7 @@ file.
 The using directives of the individual code snippets will be de-duplicated
 and `NUnit.Framework` will be automatically added.
 
-For example, assume the following code snippet:
+For example, assume the following code snippet in `SomeProgram.cs`:
 
 ```cs
 namespace Some.Namespace
@@ -177,7 +177,7 @@ namespace Some.Namespace.Tests
 {
     // ...
 
-    public class Doctests
+    public class DocTest_SomeProgram_cs
     {
         public void AtLine123AndColumn8() {
             Assert.AreEqual(

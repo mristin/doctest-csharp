@@ -32,7 +32,6 @@ namespace DoctestCsharp
                 Error = error;
             }
         }
-        // TODO: document this behavior in the readme
 
         /// <summary>
         /// Parses the command-line arguments given as --input-output. 
