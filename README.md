@@ -34,21 +34,12 @@ Therefore we decided to roll out doctest-csharp.
 https://github.com/moodmosaic/doctest/
 ) which is almost identical to doctest-csharp, just for F#.
 
-**[Dotnet-try](https://github.com/dotnet/try)** pursues a similar, and more 
-ambitious, goal of interactive code samples (akin to a 
-[REPL](
-https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop
-) for C#). The tool provides interactive markdown files and requires Visual
-Studio running (at the time of the writing in July 2020, see 
-[this section in their Readme](
-https://github.com/dotnet/try#online-powered-by-blazor
-) and [this one](
-https://github.com/dotnet/try#interactive-net-core-documentation-with-the-dotnet-try-global-tool
-)). While code snippets from the structured comments will probably be added
-in the near future, Dotnet-try focuses on the markdown at the moment.
-If all you need are *static* code examples extracted from structured comments 
-and added to your test suite, doctest-csharp is probably a better light-weight 
-alternative.
+**[Dotnet-try](https://github.com/dotnet/try)** goes the other way. The code 
+examples are written in separate source files and dotnet-try inlines them into
+the documentation markdown files. As of July 2020, dotnet-try did not handle 
+code examples in the structured comments. Hence it is orthogonal to 
+doctest-csharp: use dotnet-try for snippets in the documentation you manually 
+write; use doctest-csharp to test your code examples in the structured comments.
 
 ## Installation
 
