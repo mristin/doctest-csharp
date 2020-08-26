@@ -38,6 +38,14 @@ jobs:
         working-directory: src
         run: dotnet dead-csharp --inputs '**/*.cs' --excludes '**/obj/**'
 
+      - name: dotnet publish
+        working-directory: src
+        run: dotnet publish -c Release -o ..\out
+
+      - name: Check help in Readme
+        working-directory: src
+        run: powershell .\CheckHelpInReadme.ps1
+
       - name: Test
         working-directory: src
         run: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover

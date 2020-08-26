@@ -32,11 +32,18 @@ function Main
     }
 
     Write-Host "Running the unit tests..."
-    dotnet test /p:CollectCoverage=true
+    dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     if ($LASTEXITCODE -ne 0)
     {
         throw "The unit tests failed."
     }
+
+    $outDir = Join-Path (Split-Path -Parent $PSScriptRoot) "out"
+    Write-Host "Publishing to $outDir ..."
+    dotnet publish -c Release -o $outDir
+
+    Write-Host "Checking --help in Readme..."
+    ./CheckHelpInReadme.ps1
 
     Pop-Location
 }
