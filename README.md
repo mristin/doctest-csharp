@@ -61,6 +61,30 @@ dotnet tool install DoctestCsharp
 
 ## Usage
 
+**Overview.** To obtain an overview of the command-line arguments, use `--help`:
+
+```bash
+dotnet doctest-csharp --help
+```
+<!--- Help starts. -->
+```
+DoctestCsharp:
+  Generates tests from the embedded code snippets in the code documentation.
+
+Usage:
+  DoctestCsharp [options]
+
+Options:
+  --input-output <input-output> (REQUIRED)    Input and output directory pairs containing the *.cs files The input is separated from the output by the PATH separator (e.g., ';' on Windows, ':' on POSIX).If no output is specified, the --suffix is appended to the input to automatically obtain the output.
+  -s, --suffix <suffix>                       Suffix to be automatically appended to the input to obtain the output directory in cases where no explicit output directory was given [default: .Tests]
+  -e, --excludes <excludes>                   Glob patterns of the files to be excluded from the input. The exclude patterns are either absolute (e.g., rooted with '/') or relative. In case of relative exclude patterns, they are relative to the _input_ directory and NOT to the current working directory.
+  -c, --check                                 If set, does not generate any files, but only checks that the content of the test files coincides with what would be generated. This is particularly useful in continuous integration pipelines if you want to check if all the files have been scanned and correctly generated.
+  --version                                   Show version information
+  -?, -h, --help                              Show help and usage information
+```
+<!--- Help ends. -->
+
+
 **Mark the code snippets.** You need to explicitly mark which `<code>...</code>`
 snippets in your documentation should be tested by adding the `doctest` 
 attribute and setting it to `true`.
