@@ -9,19 +9,19 @@
       ]
     },
     "coveralls.net": {
-      "version": "1.0.0",
+      "version": "2.0.0-beta0002",
       "commands": [
         "csmacnz.Coveralls"
       ]
     },
     "bitesized": {
-      "version": "1.0.0-beta1",
+      "version": "1.0.0",
       "commands": [
         "bite-sized"
       ]
     },
     "deadcsharp": {
-      "version": "1.0.0-beta4",
+      "version": "1.0.0",
       "commands": [
         "dead-csharp"
       ]
