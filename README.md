@@ -79,6 +79,7 @@ Options:
   -s, --suffix <suffix>                       Suffix to be automatically appended to the input to obtain the output directory in cases where no explicit output directory was given [default: .Tests]
   -e, --excludes <excludes>                   Glob patterns of the files to be excluded from the input. The exclude patterns are either absolute (e.g., rooted with '/') or relative. In case of relative exclude patterns, they are relative to the _input_ directory and NOT to the current working directory.
   -c, --check                                 If set, does not generate any files, but only checks that the content of the test files coincides with what would be generated. This is particularly useful in continuous integration pipelines if you want to check if all the files have been scanned and correctly generated.
+  --verbose                                   If set, outputs only important messages to the users such as errors
   --version                                   Show version information
   -?, -h, --help                              Show help and usage information
 ```

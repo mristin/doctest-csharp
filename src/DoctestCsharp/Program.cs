@@ -13,7 +13,7 @@ namespace DoctestCsharp
 {
     public class Program
     {
-        private static int Handle(string[] inputOutput, string suffix, string[]? excludes, bool check)
+        private static int Handle(string[] inputOutput, string suffix, string[]? excludes, bool check, bool verbose)
         {
             int exitCode = 0;
 
@@ -82,10 +82,14 @@ namespace DoctestCsharp
                     if (!check)
                     {
                         bool generated = Process.Generate(doctests, relativePath, outputPath);
-                        Console.WriteLine(
-                            generated
-                                ? $"Generated doctest(s) for: {inputPath} -> {outputPath}"
-                                : $"No doctests found in: {inputPath}");
+
+                        if (verbose)
+                        {
+                            Console.WriteLine(
+                                generated
+                                    ? $"Generated doctest(s) for: {inputPath} -> {outputPath}"
+                                    : $"No doctests found in: {inputPath}");
+                        }
                     }
                     else
                     {
@@ -93,10 +97,13 @@ namespace DoctestCsharp
                         switch (report)
                         {
                             case Process.Report.Ok:
-                                Console.WriteLine(
-                                    (doctests.Count > 0)
-                                        ? $"OK: {inputPath} -> {outputPath}"
-                                        : $"OK, no doctests: {inputPath}");
+                                if (verbose)
+                                {
+                                    Console.WriteLine(
+                                        (doctests.Count > 0)
+                                            ? $"OK: {inputPath} -> {outputPath}"
+                                            : $"OK, no doctests: {inputPath}");
+                                }
                                 break;
                             case Process.Report.Different:
                                 Console.WriteLine($"Expected different content: {inputPath} -> {outputPath}");
@@ -163,12 +170,17 @@ namespace DoctestCsharp
                     "This is particularly useful " +
                     "in continuous integration pipelines if you want to check if all the files " +
                     "have been scanned and correctly generated."
-                )
+                ),
+
+                new Option<bool>(
+                    new[] {"--verbose"},
+                    "If set, outputs only important messages to the users such as errors"
+                    )
             };
 
             rootCommand.Handler = System.CommandLine.Invocation.CommandHandler.Create(
-                (string[] inputOutput, string suffix, string[]? excludes, bool check) =>
-                    Handle(inputOutput, suffix, excludes, check));
+                (string[] inputOutput, string suffix, string[]? excludes, bool check, bool verbose) =>
+                    Handle(inputOutput, suffix, excludes, check, verbose));
 
             int exitCode = rootCommand.InvokeAsync(args).Result;
             return exitCode;
