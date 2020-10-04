@@ -60,7 +60,11 @@ namespace DoctestCsharp.Test
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}" });
+                new[]
+                {
+                    "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}",
+                    "--verbose"
+                });
 
             string nl = Environment.NewLine;
 
@@ -92,7 +96,11 @@ namespace DoctestCsharp.Test
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}" });
+                new[]
+                {
+                    "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}",
+                    "--verbose"
+                });
 
             string nl = Environment.NewLine;
 
@@ -177,7 +185,12 @@ namespace Tests
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}", "--check" });
+                new[]
+                {
+                    "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}",
+                    "--check",
+                    "--verbose"
+                });
 
             string nl = Environment.NewLine;
 
@@ -208,7 +221,12 @@ namespace Tests
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}", "--check" });
+                new[]
+                {
+                    "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}",
+                    "--check",
+                    "--verbose"
+                });
 
             string nl = Environment.NewLine;
 
@@ -240,7 +258,12 @@ namespace Tests
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}", "--check" });
+                new[]
+                {
+                    "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}",
+                    "--check",
+                    "--verbose"
+                });
 
             string nl = Environment.NewLine;
 
@@ -267,7 +290,12 @@ namespace Tests
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}", "--check" });
+                new[]
+                {
+                    "--input-output", $"{input.FullName}{Path.PathSeparator}{output.FullName}",
+                    "--check",
+                    "--verbose"
+                });
 
             string nl = Environment.NewLine;
 
@@ -291,7 +319,12 @@ namespace Tests
             using var consoleCapture = new ConsoleCapture();
 
             int exitCode = Program.MainWithCode(
-                new[] { "--input-output", $"{input.FullName}{Path.PathSeparator}{output}", "--check" });
+                new[]
+                {
+                    "--input-output", $"{input.FullName}{Path.PathSeparator}{output}",
+                    "--check",
+                    "--verbose"
+                });
 
             string nl = Environment.NewLine;
 
