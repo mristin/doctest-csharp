@@ -1,5 +1,5 @@
+using System;
 using ArgumentException = System.ArgumentException;
-using DirectoryInfo = System.IO.DirectoryInfo;
 using Path = System.IO.Path;
 using File = System.IO.File;
 using System.Collections.Generic;
@@ -92,14 +92,6 @@ namespace DoctestCsharp
             return true;
         }
 
-        public enum Report
-        {
-            Ok,
-            Different,
-            DoesntExist,
-            ShouldNotExist
-        }
-
         /// <summary>
         /// Checks that the generated output actually matches the stored output.
         /// </summary>
@@ -107,7 +99,7 @@ namespace DoctestCsharp
         /// <param name="relativeInputPath">Relative path to the input file</param>
         /// <param name="outputPath">Absolute path to the output doctest file</param>
         /// <returns>Outcome of the check</returns>
-        public static Report Check(
+        public static Report.IReport Check(
             List<Extraction.Doctest> doctests,
             string relativeInputPath,
             string outputPath)
@@ -125,15 +117,15 @@ namespace DoctestCsharp
             {
                 if (File.Exists(outputPath))
                 {
-                    return Report.ShouldNotExist;
+                    return new Report.ShouldNotExist();
                 }
 
-                return Report.Ok;
+                return new Report.Ok();
             }
 
             if (doctests.Count > 0 && !File.Exists(outputPath))
             {
-                return Report.DoesntExist;
+                return new Report.DoesntExist();
             }
 
             string identifier = Identifier(relativeInputPath);
@@ -146,9 +138,32 @@ namespace DoctestCsharp
 
             string got = File.ReadAllText(outputPath);
 
-            return (got == expected)
-                ? Report.Ok
-                : Report.Different;
+            // Split and re-join by new lines to be system-agnostic
+
+            expected = String.Join(
+                System.Environment.NewLine,
+                expected.Split(
+                    new[] { "\r\n", "\r", "\n" },
+                    System.StringSplitOptions.None
+                ));
+
+            got = String.Join(
+                System.Environment.NewLine,
+                got.Split(
+                    new[] { "\r\n", "\r", "\n" },
+                    System.StringSplitOptions.None
+                ));
+
+            if (expected == got)
+            {
+                return new Report.Ok();
+            }
+
+            // Compute the difference if expected and got are not equal
+
+            var diffBuilder = new DiffPlex.DiffBuilder.InlineDiffBuilder(new DiffPlex.Differ());
+            var diff = diffBuilder.BuildDiffModel(expected, got);
+            return new Report.Different(diff);
         }
     }
 }

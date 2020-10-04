@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="DiffPlex" Version="1.6.3" />
       <PackageReference Include="Glob" Version="1.1.6" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.7.0-1.final" />
       <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20303.1" />
