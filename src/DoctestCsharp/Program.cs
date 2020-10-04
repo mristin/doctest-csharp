@@ -96,7 +96,7 @@ namespace DoctestCsharp
                         var report = Process.Check(doctests, relativePath, outputPath);
                         switch (report)
                         {
-                            case Process.Report.Ok:
+                            case Report.Ok _:
                                 if (verbose)
                                 {
                                     Console.WriteLine(
@@ -105,17 +105,38 @@ namespace DoctestCsharp
                                             : $"OK, no doctests: {inputPath}");
                                 }
                                 break;
-                            case Process.Report.Different:
+                            case Report.Different reportDifferent:
                                 Console.WriteLine($"Expected different content: {inputPath} -> {outputPath}");
+                                Console.WriteLine(
+                                    "Here is the diff between the expected content and the actual content:");
+
+                                foreach (var line in reportDifferent.Diff.Lines)
+                                {
+                                    switch (line.Type)
+                                    {
+                                        case DiffPlex.DiffBuilder.Model.ChangeType.Inserted:
+                                            Console.Write("+ ");
+                                            break;
+                                        case DiffPlex.DiffBuilder.Model.ChangeType.Deleted:
+                                            Console.Write("- ");
+                                            break;
+                                        default:
+                                            Console.Write("  ");
+                                            break;
+                                    }
+
+                                    Console.WriteLine(line.Text);
+                                }
+
                                 exitCode = 1;
                                 break;
 
-                            case Process.Report.DoesntExist:
+                            case Report.DoesntExist _:
                                 Console.WriteLine($"Output file does not exist: {inputPath} -> {outputPath}");
                                 exitCode = 1;
                                 break;
 
-                            case Process.Report.ShouldNotExist:
+                            case Report.ShouldNotExist _:
                                 Console.WriteLine(
                                     $"No doctests found in: {inputPath}; the output should not exist: {outputPath}");
                                 exitCode = 1;
