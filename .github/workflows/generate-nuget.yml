@@ -29,4 +29,4 @@ jobs:
         working-directory: src
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
-        run: dotnet nuget push out\*.nupkg --skip-duplicate --no-symbols true --source https://api.nuget.org/v3/index.json -k $env:NUGET_AUTH_TOKEN
+        run: dotnet nuget push out\*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json -k $env:NUGET_AUTH_TOKEN
