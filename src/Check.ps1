@@ -1,7 +1,7 @@
 #!/usr/bin/env pwsh
 
 <#
-This script runs locally the checks from the continous integration.
+This script runs locally the checks from the continuous integration.
 #>
 
 function Main
@@ -11,18 +11,18 @@ function Main
     Set-Location $PSScriptRoot
 
     Write-Host "Checking the format..."
-    dotnet format --check
+    dotnet format --verify-no-changes
     if ($LASTEXITCODE -ne 0)
     {
         throw "Format check failed."
     }
 
-    Write-Host "Checking the line length and number of lines per file..."
-    dotnet bite-sized --inputs '**/*.cs' --excludes '**/obj/**'
-    if ($LASTEXITCODE -ne 0)
-    {
-        throw "The check of line width failed."
-    }
+#     Write-Host "Checking the line length and number of lines per file..."
+#     dotnet bite-sized --inputs '**/*.cs' --excludes '**/obj/**'
+#     if ($LASTEXITCODE -ne 0)
+#     {
+#         throw "The check of line width failed."
+#     }
 
     Write-Host "Checking the dead code..."
     dotnet dead-csharp --inputs '**/*.cs' --excludes '**/obj/**'
