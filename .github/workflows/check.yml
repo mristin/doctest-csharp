@@ -28,7 +28,7 @@ jobs:
 
       - name: Check format
         working-directory: src
-        run: dotnet format --check
+        run: dotnet format --verify-no-changes
 
       - name: Check line width
         working-directory: src
