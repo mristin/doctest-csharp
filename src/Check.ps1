@@ -17,12 +17,12 @@ function Main
         throw "Format check failed."
     }
 
-#     Write-Host "Checking the line length and number of lines per file..."
-#     dotnet bite-sized --inputs '**/*.cs' --excludes '**/obj/**'
-#     if ($LASTEXITCODE -ne 0)
-#     {
-#         throw "The check of line width failed."
-#     }
+     Write-Host "Checking the line length and number of lines per file..."
+     dotnet bite-sized --inputs '**/*.cs' --excludes '**/obj/**'
+     if ($LASTEXITCODE -ne 0)
+     {
+         throw "The check of line width failed."
+     }
 
     Write-Host "Checking the dead code..."
     dotnet dead-csharp --inputs '**/*.cs' --excludes '**/obj/**'
